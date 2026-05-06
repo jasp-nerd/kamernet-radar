@@ -2,27 +2,30 @@ FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    PATH="/app/.venv/bin:$PATH"
+
+# Pull a pinned uv binary from the official image — fast, deterministic, no pip install of pip.
+COPY --from=ghcr.io/astral-sh/uv:0.10 /uv /usr/local/bin/
 
 WORKDIR /app
 
-# Install deps first so the layer caches between code changes
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
+# Project metadata + lockfile + readme (referenced by pyproject.toml's `readme = "README.md"`).
+COPY pyproject.toml uv.lock README.md ./
 COPY radar/ ./radar/
 COPY profiles/ ./profiles/
 COPY scripts/ ./scripts/
 COPY schema.sql ./
 
-# Run as a non-root user
+RUN uv sync --frozen --no-dev
+
 RUN useradd --create-home --uid 1000 radar \
     && chown -R radar:radar /app
 USER radar
 
 # Healthcheck: import the package to confirm the interpreter is alive.
-# The scraper itself is network-bound and has no HTTP endpoint to probe.
+# The scraper is network-bound and has no HTTP endpoint to probe.
 HEALTHCHECK --interval=5m --timeout=10s --start-period=30s --retries=3 \
     CMD python -c "import radar; print(radar.__version__)" || exit 1
 

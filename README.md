@@ -63,19 +63,21 @@ Requires Python 3.10+ and access to a Postgres instance.
 git clone https://github.com/YOUR_USERNAME/kamernet-radar
 cd kamernet-radar
 
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+# One-time: install uv (https://docs.astral.sh/uv/getting-started/installation/)
+uv sync                            # creates .venv, installs from uv.lock
 
 cp .env.example .env               # edit DATABASE_URL + one notification channel
-python -m radar init-db            # run schema.sql
-python -m radar run                # scrape forever
+uv run python -m radar init-db     # run schema.sql
+uv run python -m radar run         # scrape forever
 ```
 
 One-shot dry-run (skips notifications and DB writes, handy for tuning your profile):
 
 ```bash
-python -m radar run --once --dry-run --profile student-amsterdam
+uv run python -m radar run --once --dry-run --profile student-amsterdam
 ```
+
+Prefer plain pip? `pip install .` works — `pyproject.toml` declares the same dependencies.
 
 </details>
 

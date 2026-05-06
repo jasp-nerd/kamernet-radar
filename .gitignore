@@ -17,7 +17,6 @@ __pycache__/
 .mypy_cache/
 dist/
 build/
-uv.lock
 
 # ── Runtime data & caches ──
 *.csv

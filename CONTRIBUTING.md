@@ -8,11 +8,19 @@ Thanks for thinking about contributing. This project welcomes help, especially w
 git clone https://github.com/YOUR_USERNAME/kamernet-radar
 cd kamernet-radar
 
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-pip install ruff pytest  # dev tools not in requirements.txt
+# Install uv (https://docs.astral.sh/uv/getting-started/installation/) — one-time.
+# Then create the venv + install runtime + dev deps from the lockfile:
+uv sync --extra dev
 
 cp .env.example .env     # set DATABASE_URL for any DB-touching work
+```
+
+Run things via `uv run` (no `source .venv/bin/activate` needed):
+
+```bash
+uv run pytest
+uv run ruff check .
+uv run python -m radar list-profiles
 ```
 
 For the dashboard:
