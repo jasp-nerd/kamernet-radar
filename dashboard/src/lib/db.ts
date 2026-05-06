@@ -4,9 +4,11 @@ let sqlInstance: ReturnType<typeof postgres> | null = null;
 
 export function getDb() {
   if (!sqlInstance) {
-    sqlInstance = postgres(process.env.DATABASE_URL!, {
-      ssl: { rejectUnauthorized: false },
-    });
+    const url = process.env.DATABASE_URL!;
+    const ssl = /[?&]sslmode=disable\b/i.test(url)
+      ? false
+      : { rejectUnauthorized: false };
+    sqlInstance = postgres(url, { ssl });
   }
   return sqlInstance;
 }
