@@ -31,9 +31,9 @@ docs
 seen_listings.json
 Dockerfile
 docker-compose.yml
-README.md
+# README.md and LICENSE stay in the build context — pyproject.toml
+# references both, and hatchling reads them when building the radar wheel.
 CONTRIBUTING.md
 CODE_OF_CONDUCT.md
 SECURITY.md
 CHANGELOG.md
-LICENSE

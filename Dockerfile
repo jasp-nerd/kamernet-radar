@@ -12,7 +12,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.10 /uv /usr/local/bin/
 WORKDIR /app
 
 # Project metadata + lockfile + readme (referenced by pyproject.toml's `readme = "README.md"`).
-COPY pyproject.toml uv.lock README.md ./
+COPY pyproject.toml uv.lock README.md LICENSE ./
 COPY radar/ ./radar/
 COPY profiles/ ./profiles/
 COPY scripts/ ./scripts/
